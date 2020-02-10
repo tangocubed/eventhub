@@ -27,5 +27,7 @@ $
 Append the following entry to your `.vscode/settings.json`
 
 ```json
-"kotlin.compiler.jvm.target": "1.8"
+{
+  "kotlin.compiler.jvm.target": "1.8"
+}
 ```
