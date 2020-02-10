@@ -1,9 +1,10 @@
 package pw.nabla.tangocubed.domain.dictionary.command
 
 import org.axonframework.modelling.command.TargetAggregateIdentifier
+import pw.nabla.tangocubed.domain.dictionary.Word
 
-class Create(
+data class RegisterWordsCommand(
     @TargetAggregateIdentifier
-    val dictionaryId: String,
-    val title: String
+    val id: String,
+    val words: List<Word>
 )

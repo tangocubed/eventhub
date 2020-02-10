@@ -1,5 +1,6 @@
 package pw.nabla.tangocubed.domain.dictionary
 
-class Word {
-
-}
+data class Word(
+    val spell: String,
+    val meanings: List<String>
+) 

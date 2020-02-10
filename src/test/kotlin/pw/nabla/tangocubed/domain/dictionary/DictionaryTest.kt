@@ -6,7 +6,9 @@ import org.junit.jupiter.api.BeforeEach
 import org.axonframework.test.aggregate.FixtureConfiguration
 import org.axonframework.test.aggregate.AggregateTestFixture
 
-import pw.nabla.tangocubed.domain.dictionary.command.Create
+import pw.nabla.tangocubed.domain.dictionary.command.CreateDictionaryCommand
+import pw.nabla.tangocubed.domain.dictionary.event.DictionaryCreatedEvent
+import pw.nabla.tangocubed.domain.dictionary.exception.DuplicatedDictionaryException
 
 class DictionaryTest {
 
@@ -18,12 +20,29 @@ class DictionaryTest {
     }
 
     @Test
-    fun `A word aggregate can be identified by its spell`() {
-        Assertions.assertEquals(4, 4)
+    fun `A dictionary can be created if there is no dictionary having the same id`() {
+        fixture
+        .given()
+        .`when`(CreateDictionaryCommand(
+            id="dict1", title="The fiest dictionary"
+        ))
+        .expectSuccessfulHandlerExecution()
+        .expectEvents(DictionaryCreatedEvent(
+            id="dict1", title="The fiest dictionary"
+        ))
     }
 
     @Test
-    fun `A dictionary can be created if there is no dictionary having the same id`() {
+    fun `A request creating a new dictionary should be rejected if the id is already ueed`() {
         fixture
+        .given(DictionaryCreatedEvent(
+            id="dict1", title="The fiest dictionary"
+        ))
+        .`when`(CreateDictionaryCommand(
+            id="dict1", title="The second dictionary"
+        ))
+        .expectException(
+            DuplicatedDictionaryException::class.java
+        )
     }
 }
