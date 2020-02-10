@@ -65,7 +65,7 @@ class Dictionary() {
     }
 
     @EventSourcingHandler
-    fun on(event: RemoveWordsCommand) {
+    fun on(event: WordsRemovedEvent) {
         words = words.filter { word -> !event.words.contains(word.spell) }.toSet()
     }
 
