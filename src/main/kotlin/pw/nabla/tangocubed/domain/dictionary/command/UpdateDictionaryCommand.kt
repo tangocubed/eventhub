@@ -2,8 +2,8 @@ package pw.nabla.tangocubed.domain.dictionary.command
 
 import org.axonframework.modelling.command.TargetAggregateIdentifier
 
-data class RemoveWordsCommand(
+data class UpdateDictionaryCommand(
     @TargetAggregateIdentifier
-    val dictionaryId: String,
-    val words: List<String>
+    val id: String,
+    val updates: Map<String, String>
 )

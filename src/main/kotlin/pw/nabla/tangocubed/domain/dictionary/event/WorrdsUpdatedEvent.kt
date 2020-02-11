@@ -1,6 +1,6 @@
 package pw.nabla.tangocubed.domain.dictionary.event
 
-data class WordsRemovedEvent(
+data class WordsUpdatedEvent(
     val dictionaryId: String,
-    val removed: Set<String>
+    val updated: Map<String, List<String>>
 )

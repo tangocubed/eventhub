@@ -6,12 +6,9 @@ import org.axonframework.modelling.command.AggregateLifecycle
 import org.axonframework.commandhandling.CommandHandler
 import org.axonframework.eventsourcing.EventSourcingHandler
 
-import pw.nabla.tangocubed.domain.dictionary.command.CreateDictionaryCommand
-import pw.nabla.tangocubed.domain.dictionary.command.RegisterWordsCommand
-import pw.nabla.tangocubed.domain.dictionary.command.RemoveWordsCommand
-import pw.nabla.tangocubed.domain.dictionary.event.DictionaryCreatedEvent
-import pw.nabla.tangocubed.domain.dictionary.event.WordsRegisteredEvent
-import pw.nabla.tangocubed.domain.dictionary.event.WordsRemovedEvent
+import pw.nabla.tangocubed.domain.dictionary.command.*
+import pw.nabla.tangocubed.domain.dictionary.event.*
+import pw.nabla.tangocubed.domain.dictionary.exception.*
 import java.util.*
 
 @Aggregate
@@ -43,30 +40,53 @@ class Dictionary() {
     fun handle(command: RegisterWordsCommand) {
         val event = WordsRegisteredEvent(
             dictionaryId = command.dictionaryId,
-            words = command.words.entries.map{ entry ->
-                Word(spell = entry.key, meanings = entry.value)
-            }.toSet()
+            registered = command.words
         )
         AggregateLifecycle.apply(event)
     }
 
     @EventSourcingHandler
     fun on(event: WordsRegisteredEvent) {
-        words = words + event.words
+        words = words + event.registered.entries.map{ entry ->
+            Word(spell = entry.key, meanings = entry.value)
+        }.toSet()
     }
 
     @CommandHandler
     fun handle(command: RemoveWordsCommand) {
         val event = WordsRemovedEvent(
             dictionaryId = command.dictionaryId,
-            words = command.words
+            removed = command.words.toSet()
         )
         AggregateLifecycle.apply(event)
     }
 
     @EventSourcingHandler
     fun on(event: WordsRemovedEvent) {
-        words = words.filter { word -> !event.words.contains(word.spell) }.toSet()
+        words = words.filter { word -> !event.removed.contains(word.spell) }.toSet()
+    }
+
+    val propertyNames = listOf("title")
+
+    @CommandHandler
+    fun handle(command: UpdateDictionaryCommand) {
+        val updates = command.updates
+        val unknownProperties = updates.keys.filter{ k -> !propertyNames.contains(k) }
+        if (unknownProperties.isNotEmpty()) throw UnknownPropertyException(
+            unknownProperties, propertyNames, command
+        )
+        val event = DictionaryUpdatedEvent(
+            id = command.id,
+            updates = command.updates
+        )
+        AggregateLifecycle.apply(event)
+    }
+
+    @EventSourcingHandler
+    fun on(event: DictionaryUpdatedEvent) {
+        if (event.updates.containsKey("title")) {
+            title = event.updates["title"]!!
+        }
     }
 
     override fun equals(other: Any?): Boolean = when(other) {

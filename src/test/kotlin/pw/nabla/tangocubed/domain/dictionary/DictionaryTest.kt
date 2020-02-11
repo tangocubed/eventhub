@@ -7,12 +7,9 @@ import org.axonframework.test.aggregate.FixtureConfiguration
 import org.axonframework.test.aggregate.AggregateTestFixture
 import org.junit.jupiter.api.function.Executable
 
-import pw.nabla.tangocubed.domain.dictionary.command.CreateDictionaryCommand
-import pw.nabla.tangocubed.domain.dictionary.command.RegisterWordsCommand
-import pw.nabla.tangocubed.domain.dictionary.command.RemoveWordsCommand
-import pw.nabla.tangocubed.domain.dictionary.event.DictionaryCreatedEvent
-import pw.nabla.tangocubed.domain.dictionary.event.WordsRegisteredEvent
-import pw.nabla.tangocubed.domain.dictionary.event.WordsRemovedEvent
+import pw.nabla.tangocubed.domain.dictionary.command.*
+import pw.nabla.tangocubed.domain.dictionary.event.*
+import pw.nabla.tangocubed.domain.dictionary.exception.*
 import java.util.*
 
 class DictionaryTest {
@@ -58,10 +55,10 @@ class DictionaryTest {
     )}
     val wordsRegisteredEvent = { aggregateId: String -> WordsRegisteredEvent(
         dictionaryId = aggregateId,
-        words = setOf(
-            Word(spell = "hoge", meanings = listOf("ほげ")),
-            Word(spell = "fuga", meanings = listOf("ふが")),
-            Word(spell = "piyo", meanings = listOf("ぴよ"))
+        registered = mapOf(
+           "hoge" to listOf("ほげ"),
+           "fuga" to listOf("ふが"),
+           "piyo" to listOf("ぴよ")
         )
     )}
     @Test
@@ -82,11 +79,11 @@ class DictionaryTest {
 
     val removeWordsCommand = { aggregateId: String -> RemoveWordsCommand(
         dictionaryId = aggregateId,
-        words = setOf("hoge", "piyo")
+        words = listOf("hoge", "piyo")
     )}
     val wordsRemovedEvent = { aggregateId: String -> WordsRemovedEvent(
         dictionaryId = aggregateId,
-        words = setOf("hoge", "piyo")
+        removed = setOf("hoge", "piyo")
     )}
     @Test
     fun `Words can be removed from a dictionary`() {
@@ -101,6 +98,52 @@ class DictionaryTest {
                 aggregate.words.map{ w -> w.spell }.toSet()
             )}
         )}
+    }
+
+    val updatedTitle = "NEW TITLE"
+    val updateDictionaryCommand = { aggregateId: String -> UpdateDictionaryCommand(
+        id = aggregateId,
+        updates = mapOf("title" to updatedTitle)
+    )}
+    val dictionaryUpdatedEvent = { aggregateId: String -> DictionaryUpdatedEvent(
+        id = aggregateId,
+        updates = mapOf("title" to updatedTitle)
+    )}
+
+    @Test
+    fun `Properties of dictionary excluding its id can be changed`() {
+        val aggregateId = UUID.randomUUID().toString()
+        fixture
+        .given(
+            dictionaryCreatedEvent(aggregateId)
+        )
+        .`when`(
+            updateDictionaryCommand(aggregateId)
+        )
+        .expectEvents(
+            dictionaryUpdatedEvent(aggregateId)
+        )
+        .expectState() { aggregate -> assertAll(
+            Executable{ assertEquals(updatedTitle, aggregate.title) }
+        )}
+    }
+
+    val invalidUpdateDictionaryCommand = { aggregateId: String -> UpdateDictionaryCommand(
+        id = aggregateId,
+        updates = mapOf("pTitle" to updatedTitle)
+    )}
+    @Test
+    fun `A command requesting an update of a not existing property should be rejected`() {
+        val aggregateId = UUID.randomUUID().toString()
+        fixture
+        .given(
+            dictionaryCreatedEvent(aggregateId)
+        )
+        .`when`(
+            invalidUpdateDictionaryCommand(aggregateId)
+        )
+        .expectNoEvents()
+        .expectException(UnknownPropertyException::class.java)
     }
 
     /*
