@@ -89,9 +89,16 @@ class DictionaryTest {
     fun `Words can be removed from a dictionary`() {
         val aggregateId = UUID.randomUUID().toString()
         fixture
-        .given(dictionaryCreatedEvent(aggregateId), wordsRegisteredEvent(aggregateId))
-        .`when`(removeWordsCommand(aggregateId))
-        .expectEvents(wordsRemovedEvent(aggregateId))
+        .given(
+            dictionaryCreatedEvent(aggregateId),
+            wordsRegisteredEvent(aggregateId)
+        )
+        .`when`(
+            removeWordsCommand(aggregateId)
+        )
+        .expectEvents(
+            wordsRemovedEvent(aggregateId)
+        )
         .expectState { aggregate -> assertAll(
             Executable { assertEquals(
                 setOf("fuga"),
@@ -123,7 +130,7 @@ class DictionaryTest {
         .expectEvents(
             dictionaryUpdatedEvent(aggregateId)
         )
-        .expectState() { aggregate -> assertAll(
+        .expectState { aggregate -> assertAll(
             Executable{ assertEquals(updatedTitle, aggregate.title) }
         )}
     }

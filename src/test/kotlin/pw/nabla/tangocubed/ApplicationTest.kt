@@ -1,10 +1,10 @@
-package pw.nabla.tangocubed.eventhub
+package pw.nabla.tangocubed
 
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
 
 @SpringBootTest
-class EventhubApplicationTests {
+class ApplicationTest {
 
 	@Test
 	fun contextLoads() {

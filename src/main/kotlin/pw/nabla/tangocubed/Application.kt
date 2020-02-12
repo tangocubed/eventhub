@@ -1,11 +1,11 @@
-package pw.nabla.tangocubed.eventhub
+package pw.nabla.tangocubed
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
 @SpringBootApplication
-class EventhubApplication
+class Application
 
 fun main(args: Array<String>) {
-    runApplication<EventhubApplication>(*args)
+    runApplication<Application>(*args)
 }
