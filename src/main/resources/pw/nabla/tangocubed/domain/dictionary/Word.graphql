@@ -1,0 +1,4 @@
+type Word {
+    spell: String!
+    meanings: [String]!
+}

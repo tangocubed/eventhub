@@ -4,6 +4,6 @@ import org.axonframework.modelling.command.TargetAggregateIdentifier
 
 data class RemoveWordsCommand(
     @TargetAggregateIdentifier
-    val dictionaryId: String,
+    val aggregateId: String,
     val words: List<String>
 )

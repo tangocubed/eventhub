@@ -1,8 +1,6 @@
 package pw.nabla.tangocubed.domain.dictionary.event
 
-import pw.nabla.tangocubed.domain.dictionary.Word
-
 data class WordsRegisteredEvent(
-    val dictionaryId: String,
+    override val aggregateId: String,
     val registered: Map<String, List<String>>
-)
+): DictionaryEvent

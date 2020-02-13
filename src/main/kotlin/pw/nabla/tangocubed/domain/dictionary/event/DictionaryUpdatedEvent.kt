@@ -1,6 +1,6 @@
 package pw.nabla.tangocubed.domain.dictionary.event
 
 data class DictionaryUpdatedEvent(
-    val id: String,
+    override val aggregateId: String,
     val updates: Map<String, String>
-)
+): DictionaryEvent

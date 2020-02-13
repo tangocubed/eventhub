@@ -4,6 +4,6 @@ import org.axonframework.modelling.command.TargetAggregateIdentifier
 
 data class UpdateDictionaryCommand(
     @TargetAggregateIdentifier
-    val id: String,
+    val aggregateId: String,
     val updates: Map<String, String>
 )

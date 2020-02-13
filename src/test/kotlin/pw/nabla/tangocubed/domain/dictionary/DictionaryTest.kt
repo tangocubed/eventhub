@@ -26,7 +26,7 @@ class DictionaryTest {
         title = title
     )
     val dictionaryCreatedEvent = { aggregateId: String -> DictionaryCreatedEvent(
-        id = aggregateId,
+        aggregateId = aggregateId,
         title = title
     )}
     @Test
@@ -36,17 +36,17 @@ class DictionaryTest {
         .givenNoPriorActivity()
         .`when`(createDictionaryCommand)
         .expectState { aggregate ->
-            aggregateId = aggregate.id
+            aggregateId = aggregate.aggregateId
         }
         .expectEvents(dictionaryCreatedEvent(aggregateId))
         .expectState { aggregate -> assertAll(
             Executable { assertEquals(title, aggregate.title) },
-            Executable { assertEquals(aggregateId, aggregate.id) }
+            Executable { assertEquals(aggregateId, aggregate.aggregateId) }
         )}
     }
 
     val registerWordsCommand = { aggregateId: String -> RegisterWordsCommand(
-        dictionaryId = aggregateId,
+        aggregateId = aggregateId,
         words = mapOf(
            "hoge" to listOf("ほげ"),
            "fuga" to listOf("ふが"),
@@ -54,7 +54,7 @@ class DictionaryTest {
         )
     )}
     val wordsRegisteredEvent = { aggregateId: String -> WordsRegisteredEvent(
-        dictionaryId = aggregateId,
+        aggregateId = aggregateId,
         registered = mapOf(
            "hoge" to listOf("ほげ"),
            "fuga" to listOf("ふが"),
@@ -78,11 +78,11 @@ class DictionaryTest {
     }
 
     val removeWordsCommand = { aggregateId: String -> RemoveWordsCommand(
-        dictionaryId = aggregateId,
+        aggregateId = aggregateId,
         words = listOf("hoge", "piyo")
     )}
     val wordsRemovedEvent = { aggregateId: String -> WordsRemovedEvent(
-        dictionaryId = aggregateId,
+        aggregateId = aggregateId,
         removed = setOf("hoge", "piyo")
     )}
     @Test
@@ -109,11 +109,11 @@ class DictionaryTest {
 
     val updatedTitle = "NEW TITLE"
     val updateDictionaryCommand = { aggregateId: String -> UpdateDictionaryCommand(
-        id = aggregateId,
+        aggregateId = aggregateId,
         updates = mapOf("title" to updatedTitle)
     )}
     val dictionaryUpdatedEvent = { aggregateId: String -> DictionaryUpdatedEvent(
-        id = aggregateId,
+        aggregateId = aggregateId,
         updates = mapOf("title" to updatedTitle)
     )}
 
@@ -136,7 +136,7 @@ class DictionaryTest {
     }
 
     val invalidUpdateDictionaryCommand = { aggregateId: String -> UpdateDictionaryCommand(
-        id = aggregateId,
+        aggregateId = aggregateId,
         updates = mapOf("pTitle" to updatedTitle)
     )}
     @Test

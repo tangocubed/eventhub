@@ -4,6 +4,6 @@ import org.axonframework.modelling.command.TargetAggregateIdentifier
 
 data class RegisterWordsCommand(
     @TargetAggregateIdentifier
-    val dictionaryId: String,
+    val aggregateId: String,
     val words: Map<String, List<String>>
 )

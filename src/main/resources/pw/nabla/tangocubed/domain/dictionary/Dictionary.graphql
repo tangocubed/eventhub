@@ -1,0 +1,6 @@
+type Dictionary {
+    aggregateId: String!
+    aggregateVersion: Int!
+    title: String!
+    words: [Word]!
+}

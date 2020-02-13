@@ -4,5 +4,5 @@ import org.axonframework.modelling.command.TargetAggregateIdentifier
 
 data class UpdateWordsCommand(
     @TargetAggregateIdentifier
-    val dictionaryId: String
+    val aggregateId: String
 )
