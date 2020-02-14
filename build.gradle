@@ -30,8 +30,6 @@ dependencies {
     implementation "com.graphql-java-kickstart:graphql-spring-boot-starter:6.0.1"
     implementation 'com.graphql-java-kickstart:playground-spring-boot-starter:6.0.1'
 
-    implementation 'org.springdoc:springdoc-openapi-webflux-ui:1.2.30'
-
     testImplementation 'io.projectreactor:reactor-test'
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
