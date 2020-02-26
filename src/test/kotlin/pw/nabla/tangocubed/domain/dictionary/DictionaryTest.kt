@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.axonframework.test.aggregate.FixtureConfiguration
 import org.axonframework.test.aggregate.AggregateTestFixture
-import org.junit.jupiter.api.function.Executable
+import org.junit.jupiter.api.assertAll
 
 import pw.nabla.tangocubed.domain.dictionary.command.*
 import pw.nabla.tangocubed.domain.dictionary.event.*
@@ -40,8 +40,8 @@ class DictionaryTest {
         }
         .expectEvents(dictionaryCreatedEvent(aggregateId))
         .expectState { aggregate -> assertAll(
-            Executable { assertEquals(title, aggregate.title) },
-            Executable { assertEquals(aggregateId, aggregate.aggregateId) }
+            { assertEquals(title, aggregate.title) },
+            { assertEquals(aggregateId, aggregate.aggregateId) }
         )}
     }
 
@@ -69,8 +69,8 @@ class DictionaryTest {
         .`when`(registerWordsCommand(aggregateId))
         .expectEvents(wordsRegisteredEvent(aggregateId))
         .expectState { aggregate -> assertAll(
-            Executable { assertEquals(3, aggregate.words.size) },
-            Executable { assertEquals(
+            { assertEquals(3, aggregate.words.size) },
+            { assertEquals(
                 setOf("hoge", "fuga", "piyo"),
                 aggregate.words.map{ w -> w.spell }.toSet()
             )}
@@ -100,7 +100,7 @@ class DictionaryTest {
             wordsRemovedEvent(aggregateId)
         )
         .expectState { aggregate -> assertAll(
-            Executable { assertEquals(
+            { assertEquals(
                 setOf("fuga"),
                 aggregate.words.map{ w -> w.spell }.toSet()
             )}
@@ -131,7 +131,7 @@ class DictionaryTest {
             dictionaryUpdatedEvent(aggregateId)
         )
         .expectState { aggregate -> assertAll(
-            Executable{ assertEquals(updatedTitle, aggregate.title) }
+            { assertEquals(updatedTitle, aggregate.title) }
         )}
     }
 
